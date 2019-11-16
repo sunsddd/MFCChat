@@ -60,6 +60,8 @@ CMFCChatClientDlg::CMFCChatClientDlg(CWnd* pParent /*=NULL*/)
 void CMFCChatClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST, m_list);
+	DDX_Control(pDX, IDC_SENDMSG_EDIT, m_input);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
@@ -172,4 +174,12 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 	LPCSTR szIP = (LPCSTR)T2A(strIP);
 
 	TRACE("[ChatClient] szPort = %s , szIP = %s", szPort, szIP);
+
+	int iPort = _ttoi(strPort);
+
+	//
+	m_client = new MySocket;
+	m_client->Create();
+
+	m_client->Connect(strIP, iPort);
 }
