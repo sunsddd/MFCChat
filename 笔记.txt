@@ -1,0 +1,14 @@
+命名规范
+
+uint u
+
+dword dw
+
+LPCSTR
+
+成员变量 m_
+
+全局变量 g_
+
+静态变量 s_
+

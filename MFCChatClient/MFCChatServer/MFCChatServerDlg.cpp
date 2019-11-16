@@ -158,5 +158,13 @@ HCURSOR CMFCChatServerDlg::OnQueryDragIcon()
 void CMFCChatServerDlg::OnBnClickedStartBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
+
+	TRACE("[ChatServer] OnBnClickedStartBtn");
+	CString strPort;
+	GetDlgItem(IDC_PORT_EDIT)->GetWindowText(strPort);
+	USES_CONVERSION;
+	LPCSTR szPort = (LPCSTR)T2A(strPort);
+	TRACE("[ChatServer] szPort = %s ",szPort);
+
 }
 //mark
