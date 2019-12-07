@@ -16,8 +16,8 @@ void ChatServer::OnReceive(int nErrorCode) {
 	//1 接收数据到buf
 	TRACE("####Server OnReceive");
 	CMFCChatServerDlg *dlg = (CMFCChatServerDlg*)AfxGetApp()->GetMainWnd();
-	char szRecvBuf[200] = { 0 };
-	Receive(szRecvBuf, 200, 0);
+	char szRecvBuf[SEND_MAX_BUF] = { 0 };
+	Receive(szRecvBuf, SEND_MAX_BUF, 0);
 	TRACE("####Server szRecvBuf = %s", szRecvBuf);
 
 	//2 显示buf

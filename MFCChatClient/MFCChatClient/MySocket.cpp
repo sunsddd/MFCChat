@@ -42,8 +42,8 @@ void MySocket::OnConnect(int nErrorCode) {
 void MySocket::OnReceive(int nErrorCode) {
 	TRACE("####CMySocket OnReceive");
 	CMFCChatClientDlg *dlg = (CMFCChatClientDlg*)AfxGetApp()->GetMainWnd();
-	char szRecvBuf[200] = { 0 };
-	Receive(szRecvBuf, 200, 0);
+	char szRecvBuf[SEND_MAX_BUF] = { 0 };
+	Receive(szRecvBuf, SEND_MAX_BUF, 0);
 	TRACE("####Server szRecvBuf = %s", szRecvBuf);
 
 	//2 œ‘ æbuf
