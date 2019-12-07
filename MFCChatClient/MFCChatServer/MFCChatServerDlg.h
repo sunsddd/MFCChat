@@ -3,7 +3,9 @@
 //
 
 #pragma once
-
+#include "afxwin.h"
+#include "CServerSocket.h"
+#include "ChatServer.h"
 
 // CMFCChatServerDlg ¶Ô»°¿ò
 class CMFCChatServerDlg : public CDialogEx
@@ -33,4 +35,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedStartBtn(); //mark
+	CListBox m_list;
+	CServerSocket *m_server;
+	ChatServer *m_chat;
+	CTime m_tm;
+	afx_msg void OnBnClickedSendBtn();
 };

@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include "MySocket.h"
+#include "afxwin.h"
 
 // CMFCChatClientDlg 对话框
 class CMFCChatClientDlg : public CDialogEx
@@ -33,4 +34,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedConnectBtn();
+	MySocket *m_client;
+
+	CListBox m_list;
+	CEdit m_input;
+	CTime m_tm; //实时时间
+	afx_msg void OnBnClickedSendBtn();
 };

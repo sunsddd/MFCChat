@@ -21,12 +21,12 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 // 实现
@@ -48,7 +48,6 @@ END_MESSAGE_MAP()
 
 
 // CMFCChatClientDlg 对话框
-//sdd
 
 
 CMFCChatClientDlg::CMFCChatClientDlg(CWnd* pParent /*=NULL*/)
@@ -60,6 +59,8 @@ CMFCChatClientDlg::CMFCChatClientDlg(CWnd* pParent /*=NULL*/)
 void CMFCChatClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST, m_list);
+	DDX_Control(pDX, IDC_SENDMSG_EDIT, m_input);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
@@ -67,6 +68,7 @@ BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BTN, &CMFCChatClientDlg::OnBnClickedConnectBtn)
+	ON_BN_CLICKED(IDC_SEND_BTN, &CMFCChatClientDlg::OnBnClickedSendBtn)
 END_MESSAGE_MAP()
 
 
@@ -102,7 +104,9 @@ BOOL CMFCChatClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-
+	AfxSocketInit();
+	GetDlgItem(IDC_PORT_EDIT)->SetWindowText(_T("5000"));
+	GetDlgItem(IDC_IPADDRESS)->SetWindowText(_T("127.0.0.1"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -160,7 +164,7 @@ HCURSOR CMFCChatClientDlg::OnQueryDragIcon()
 void CMFCChatClientDlg::OnBnClickedConnectBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	TRACE("[ChatClient] OnBnClickedConnectBtn");
+	TRACE("####OnBnClickedConnectBtn");
 	CString strPort, strIP;
 
 	//获取文本框的内容
@@ -170,6 +174,46 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 	USES_CONVERSION;
 	LPCSTR szPort = (LPCSTR)T2A(strPort);
 	LPCSTR szIP = (LPCSTR)T2A(strIP);
+	int iPort = _ttoi(strPort);
+	TRACE("####szPort = %s , szIP = %s", szPort, szIP);
 
-	TRACE("[ChatClient] szPort = %s , szIP = %s", szPort, szIP);
+	m_client = new MySocket;
+	if (!m_client->Create()) {
+		TRACE("####m_client Create error %d", GetLastError());
+		return;
+	}
+	else {
+		TRACE("####m_client Create Success");
+	}
+
+	m_client->Connect(strIP, iPort);
+}
+
+
+void CMFCChatClientDlg::OnBnClickedSendBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	//1 获取编辑框内容
+	CString strTmpMsg;
+	GetDlgItem(IDC_SENDMSG_EDIT)->GetWindowTextW(strTmpMsg);
+
+	USES_CONVERSION;
+	char *szSendBuf = T2A(strTmpMsg);
+
+	//2 发送给服务器
+	m_client->Send(szSendBuf, 200, 0);
+
+	//3 显示到列表框
+	CString strShow = _T("我：");
+	CString strTime;
+	m_tm = CTime::GetCurrentTime();
+	strTime = m_tm.Format("%X ");
+	strShow = strTime + strShow;
+	strShow += strTmpMsg;
+	m_list.AddString(strShow);
+	UpdateData(FALSE);
+
+	//清空编辑框
+	GetDlgItem(IDC_SENDMSG_EDIT)->SetWindowTextW(_T(""));
 }
