@@ -25,12 +25,17 @@ void ChatServer::OnReceive(int nErrorCode) {
 	CString strRecvMsg = A2W(szRecvBuf);
 
 	//3 显示到列表框
-	CString strShow = _T("客户端：");
-	CString strTime;
-	dlg->m_tm = CTime::GetCurrentTime();
-	strTime = dlg->m_tm.Format("%X ");
-	strShow = strTime + strShow;
-	strShow += strRecvMsg;
+	//CString strShow = _T("客户端：");
+	//CString strTime;
+	//dlg->m_tm = CTime::GetCurrentTime();
+	//strTime = dlg->m_tm.Format("%X ");
+	//strShow = strTime + strShow;
+	//strShow += strRecvMsg;
+
+	CString strShow;
+	CString strInfo = _T("客户端：");
+	strShow = dlg->CatShowString(strInfo, strRecvMsg);
+
 	dlg->m_list.AddString(strShow);
 
 	CAsyncSocket::OnReceive(nErrorCode);

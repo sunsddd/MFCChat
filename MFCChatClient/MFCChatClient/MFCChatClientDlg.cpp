@@ -189,6 +189,20 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 	m_client->Connect(strIP, iPort);
 }
 
+//字符串拼接
+CString CMFCChatClientDlg::CatShowString(CString strInfo, CString strMsg) {
+
+	CTime tmTime;
+	tmTime = CTime::GetCurrentTime();
+	CString strTime = tmTime.Format("%X ");
+	CString strShow;
+
+	strShow = strTime + strInfo;
+	strShow += strMsg;
+
+	return strShow;
+}
+
 
 void CMFCChatClientDlg::OnBnClickedSendBtn()
 {
@@ -205,12 +219,17 @@ void CMFCChatClientDlg::OnBnClickedSendBtn()
 	m_client->Send(szSendBuf, 200, 0);
 
 	//3 显示到列表框
-	CString strShow = _T("我：");
-	CString strTime;
-	m_tm = CTime::GetCurrentTime();
-	strTime = m_tm.Format("%X ");
-	strShow = strTime + strShow;
-	strShow += strTmpMsg;
+
+	//CString strShow = _T("我：");
+	//CString strTime;
+	//m_tm = CTime::GetCurrentTime();
+	//strTime = m_tm.Format("%X ");
+	//strShow = strTime + strShow;
+	//strShow += strTmpMsg;
+
+	CString strShow;
+	CString strInfo = _T("我：");
+	strShow = CatShowString(strInfo, strTmpMsg);
 	m_list.AddString(strShow);
 	UpdateData(FALSE);
 

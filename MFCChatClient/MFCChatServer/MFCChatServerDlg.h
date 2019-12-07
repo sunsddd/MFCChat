@@ -38,6 +38,7 @@ public:
 	CListBox m_list;
 	CServerSocket *m_server;
 	ChatServer *m_chat;
-	CTime m_tm;
+	//CTime m_tm;
 	afx_msg void OnBnClickedSendBtn();
+	CString CatShowString(CString strInfo, CString strMsg);
 };

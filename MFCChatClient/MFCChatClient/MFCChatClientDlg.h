@@ -38,6 +38,7 @@ public:
 
 	CListBox m_list;
 	CEdit m_input;
-	CTime m_tm; //实时时间
+	//CTime m_tm; //实时时间
 	afx_msg void OnBnClickedSendBtn();
+	CString CatShowString(CString strInfo, CString strMsg);
 };

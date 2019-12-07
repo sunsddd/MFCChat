@@ -20,12 +20,12 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 // 实现
@@ -169,7 +169,7 @@ void CMFCChatServerDlg::OnBnClickedStartBtn()
 	GetDlgItem(IDC_PORT_EDIT)->GetWindowText(strPort);
 	USES_CONVERSION;
 	LPCSTR szPort = (LPCSTR)T2A(strPort);
-	TRACE("####szPort = %s ",szPort);
+	TRACE("####szPort = %s ", szPort);
 	int iPort = _ttoi(strPort);
 	m_server = new CServerSocket;
 
@@ -183,14 +183,33 @@ void CMFCChatServerDlg::OnBnClickedStartBtn()
 		return;
 	}
 
-	CString str;
-	m_tm = CTime::GetCurrentTime();
-	str += m_tm.Format("%X ");
-	str += _T("建立服务");
-	m_list.AddString(str);
+	//CString str;
+	//m_tm = CTime::GetCurrentTime();
+	//str += m_tm.Format("%X ");
+	//str += _T("建立服务");
+
+	CString strShow;
+	CString strInfo = _T(" ");
+	CString strMsg = _T("建立服务");
+	strShow = CatShowString(strInfo, strMsg);
+
+	m_list.AddString(strShow);
 	UpdateData(FALSE);
 }
 
+//字符串拼接
+CString CMFCChatServerDlg::CatShowString(CString strInfo, CString strMsg) {
+
+	CTime tmTime;
+	tmTime = CTime::GetCurrentTime();
+	CString strTime = tmTime.Format("%X ");
+	CString strShow;
+
+	strShow = strTime + strInfo;
+	strShow += strMsg;
+
+	return strShow;
+}
 
 void CMFCChatServerDlg::OnBnClickedSendBtn()
 {
@@ -206,12 +225,17 @@ void CMFCChatServerDlg::OnBnClickedSendBtn()
 	m_chat->Send(szSendBuf, 200, 0);
 
 	//3 显示到列表框
-	CString strShow = _T("服务端：");
-	CString strTime;
-	m_tm = CTime::GetCurrentTime();
-	strTime = m_tm.Format("%X ");
-	strShow = strTime + strShow;
-	strShow += strTmpMsg;
+	//CString strShow = _T("服务端：");
+	//CString strTime;
+	//m_tm = CTime::GetCurrentTime();
+	//strTime = m_tm.Format("%X ");
+	//strShow = strTime + strShow;
+	//strShow += strTmpMsg;
+
+	CString strShow;
+	CString strInfo = _T("服务端：");
+	strShow = CatShowString(strInfo, strTmpMsg);
+
 	m_list.AddString(strShow);
 	UpdateData(FALSE);
 
