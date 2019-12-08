@@ -41,4 +41,5 @@ public:
 	//CTime m_tm; //实时时间
 	afx_msg void OnBnClickedSendBtn();
 	CString CatShowString(CString strInfo, CString strMsg);
+	afx_msg void OnBnClickedSavenameBtn();
 };

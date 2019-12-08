@@ -213,8 +213,10 @@ CString CMFCChatServerDlg::CatShowString(CString strInfo, CString strMsg) {
 
 void CMFCChatServerDlg::OnBnClickedSendBtn()
 {
+
 	// TODO: 在此添加控件通知处理程序代码
 	//1 获取编译框内容
+	TRACE("####OnBnClickedSendBtn");
 	CString strTmpMsg;
 	GetDlgItem(IDC_SEND_EDIT)->GetWindowTextW(strTmpMsg);
 
@@ -222,7 +224,7 @@ void CMFCChatServerDlg::OnBnClickedSendBtn()
 	char *szSendBuf = T2A(strTmpMsg);
 
 	//2 发送给服务器
-	m_chat->Send(szSendBuf, SEND_MAX_BUF, 0);
+	m_chat->Send(szSendBuf, strlen(szSendBuf) + 1, 0);
 
 	//3 显示到列表框
 	//CString strShow = _T("服务端：");

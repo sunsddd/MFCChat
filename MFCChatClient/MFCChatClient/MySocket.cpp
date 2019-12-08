@@ -45,7 +45,7 @@ void MySocket::OnReceive(int nErrorCode) {
 	char szRecvBuf[SEND_MAX_BUF] = { 0 };
 	Receive(szRecvBuf, SEND_MAX_BUF, 0);
 	TRACE("####Server szRecvBuf = %s", szRecvBuf);
-
+	
 	//2 œ‘ æbuf
 	USES_CONVERSION;
 	CString strRecvMsg = A2W(szRecvBuf);

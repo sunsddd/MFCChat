@@ -16,8 +16,8 @@ void ChatServer::OnReceive(int nErrorCode) {
 	//1 接收数据到buf
 	TRACE("####Server OnReceive");
 	CMFCChatServerDlg *dlg = (CMFCChatServerDlg*)AfxGetApp()->GetMainWnd();
-	char szRecvBuf[SEND_MAX_BUF] = { 0 };
-	Receive(szRecvBuf, SEND_MAX_BUF, 0);
+	char szRecvBuf[SERVER_MAX_BUF] = { 0 };
+	Receive(szRecvBuf, SERVER_MAX_BUF, 0);
 	TRACE("####Server szRecvBuf = %s", szRecvBuf);
 
 	//2 显示buf
@@ -33,7 +33,7 @@ void ChatServer::OnReceive(int nErrorCode) {
 	//strShow += strRecvMsg;
 
 	CString strShow;
-	CString strInfo = _T("客户端：");
+	CString strInfo = _T("");
 	strShow = dlg->CatShowString(strInfo, strRecvMsg);
 
 	dlg->m_list.AddString(strShow);
