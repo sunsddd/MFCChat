@@ -63,5 +63,26 @@ void MySocket::OnReceive(int nErrorCode) {
 
 	dlg->m_list.AddString(strShow);
 	dlg->UpdateData(FALSE);
+
+	//自动回复
+	if (((CButton*)dlg->GetDlgItem(IDC_AUTOSEND_CHECK))->GetCheck()) {
+		//获取自动发送内容
+		CString strAutoMsg;
+		dlg->GetDlgItemText(IDC_SENDAUTOMSG_EDIT, strAutoMsg);
+		//获取昵称
+		CString strName;
+		dlg->GetDlgItemText(IDC_NAME_EDIT, strName);
+		//内容拼接 时间+昵称[自动回复]：+自动发送内容
+		CString strSendMsg;
+		strSendMsg = strName + _T("[自动回复]：") + strAutoMsg;
+		char *szSendMsg = T2A(strSendMsg);
+		//发送内容
+		dlg->m_client->Send(szSendMsg, strlen(szSendMsg) + 1, 0);
+		//本地列表显示
+		strShow = dlg->CatShowString(_T(""), strSendMsg);
+		dlg->m_list.AddString(strShow);
+		dlg->UpdateData(FALSE);
+	}
+
 	CAsyncSocket::OnReceive(nErrorCode);
 }

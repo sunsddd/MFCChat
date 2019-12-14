@@ -60,6 +60,7 @@ void CMFCChatServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_MSG_LIST, m_list);
+	DDX_Control(pDX, IDC_COLOR_COMBO, m_WordColorCombo);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
@@ -68,6 +69,9 @@ BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_START_BTN, &CMFCChatServerDlg::OnBnClickedStartBtn)
 	ON_BN_CLICKED(IDC_SEND_BTN, &CMFCChatServerDlg::OnBnClickedSendBtn)
+	ON_BN_CLICKED(IDC_CLEAR_BTN, &CMFCChatServerDlg::OnBnClickedClearBtn)
+	ON_BN_CLICKED(IDC_STOP_BTN, &CMFCChatServerDlg::OnBnClickedStopBtn)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 //mark
 
@@ -105,6 +109,18 @@ BOOL CMFCChatServerDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	AfxSocketInit();
 	GetDlgItem(IDC_PORT_EDIT)->SetWindowText(_T("5000"));
+
+	//控制控件
+	GetDlgItem(IDC_START_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(FALSE);
+
+	m_WordColorCombo.AddString(L"黑色");
+	m_WordColorCombo.AddString(L"红色");
+	m_WordColorCombo.AddString(L"蓝色");
+	m_WordColorCombo.AddString(L"绿色");
+
+	m_WordColorCombo.SetCurSel(0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -163,6 +179,11 @@ HCURSOR CMFCChatServerDlg::OnQueryDragIcon()
 void CMFCChatServerDlg::OnBnClickedStartBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	//控制控件
+	GetDlgItem(IDC_START_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STOP_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(TRUE);
+
 
 	TRACE("####OnBnClickedStartBtn");
 	CString strPort;
@@ -243,4 +264,65 @@ void CMFCChatServerDlg::OnBnClickedSendBtn()
 
 	//清空编译框
 	GetDlgItem(IDC_SEND_EDIT)->SetWindowTextW(_T(""));
+}
+
+//清屏
+void CMFCChatServerDlg::OnBnClickedClearBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_list.ResetContent();
+}
+
+
+void CMFCChatServerDlg::OnBnClickedStopBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//控制控件
+	GetDlgItem(IDC_START_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(FALSE);
+
+	//回收资源
+	m_server->Close();
+	if (m_server != NULL) {
+		delete m_server;
+		m_server = NULL;
+	}
+	if (m_chat != NULL) {
+		m_chat->Close();
+		delete m_chat;
+		m_chat = NULL;
+	}
+
+	//显示到列表框
+	CString strShow;
+	strShow = CatShowString(_T(""), _T("服务器停止"));
+	m_list.AddString(strShow);
+	UpdateData(FALSE);
+}
+
+
+HBRUSH CMFCChatServerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	CString strColor;
+	GetDlgItemTextW(IDC_COLOR_COMBO, strColor);
+
+	if (IDC_MSG_LIST == pWnd->GetDlgCtrlID() || IDC_SEND_EDIT == pWnd->GetDlgCtrlID()) {
+		if (strColor == _T("黑色")) {
+			pDC->SetTextColor(RGB(0, 0, 0));
+		}
+		else if (strColor == L"红色") {
+			pDC->SetTextColor(RGB(255, 0, 0));
+		}
+		else if (strColor == L"蓝色") {
+			pDC->SetTextColor(RGB(0, 0, 255));
+		}
+		else if (strColor == L"绿色") {
+			pDC->SetTextColor(RGB(0, 255, 0));
+		}
+	}
+
+	return hbr;
 }

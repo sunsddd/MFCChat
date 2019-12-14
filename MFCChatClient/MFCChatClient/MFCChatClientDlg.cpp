@@ -62,6 +62,7 @@ void CMFCChatClientDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_list);
 	DDX_Control(pDX, IDC_SENDMSG_EDIT, m_input);
+	DDX_Control(pDX, IDC_COLOR_COMBO, m_WordColorCombo);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
@@ -71,6 +72,10 @@ BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONNECT_BTN, &CMFCChatClientDlg::OnBnClickedConnectBtn)
 	ON_BN_CLICKED(IDC_SEND_BTN, &CMFCChatClientDlg::OnBnClickedSendBtn)
 	ON_BN_CLICKED(IDC_SAVENAME_BTN, &CMFCChatClientDlg::OnBnClickedSavenameBtn)
+	ON_BN_CLICKED(IDC_CLEARMSG_BTN, &CMFCChatClientDlg::OnBnClickedClearmsgBtn)
+	ON_BN_CLICKED(IDC_AUTOSEND_CHECK, &CMFCChatClientDlg::OnBnClickedAutosendCheck)
+	ON_BN_CLICKED(IDC_DISCONNECT_BTN, &CMFCChatClientDlg::OnBnClickedDisconnectBtn)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -129,6 +134,21 @@ BOOL CMFCChatClientDlg::OnInitDialog()
 	SetDlgItemText(IDC_NAME_EDIT, wszName);
 	UpdateData(FALSE);
 
+	//初始化控件
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_DISCONNECT_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_AUTOSEND_CHECK)->EnableWindow(FALSE);
+
+	m_WordColorCombo.AddString(_T("黑色"));
+	m_WordColorCombo.AddString(_T("红色"));
+	m_WordColorCombo.AddString(_T("蓝色"));
+	m_WordColorCombo.AddString(_T("绿色"));
+
+	//设置当前下标为零
+	m_WordColorCombo.SetCurSel(0);//set 设置	cur	current当前的	sel	select选择
+	//SetDlgItemText(IDC_COLOR_COMBO, _T("黑色"));
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -186,6 +206,12 @@ HCURSOR CMFCChatClientDlg::OnQueryDragIcon()
 void CMFCChatClientDlg::OnBnClickedConnectBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_DISCONNECT_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CONNECT_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_AUTOSEND_CHECK)->EnableWindow(TRUE);
+
+
 	TRACE("####OnBnClickedConnectBtn");
 	CString strPort, strIP;
 
@@ -292,4 +318,73 @@ void CMFCChatClientDlg::OnBnClickedSavenameBtn()
 		WritePrivateProfileStringW(_T("CLIENT"), _T("NAME"), strName, strFilePath);
 	}
 
+}
+
+
+//清屏
+void CMFCChatClientDlg::OnBnClickedClearmsgBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_list.ResetContent();
+}
+
+
+void CMFCChatClientDlg::OnBnClickedAutosendCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (((CButton*)GetDlgItem(IDC_AUTOSEND_CHECK))->GetCheck()) {
+		((CButton*)GetDlgItem(IDC_AUTOSEND_CHECK))->SetCheck(FALSE);
+	}
+	else {
+		((CButton*)GetDlgItem(IDC_AUTOSEND_CHECK))->SetCheck(TRUE);
+	}
+}
+
+
+void CMFCChatClientDlg::OnBnClickedDisconnectBtn()
+{
+	// 1 控制控件
+	GetDlgItem(IDC_SEND_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_DISCONNECT_BTN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CONNECT_BTN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_AUTOSEND_CHECK)->EnableWindow(FALSE);
+
+	//2 回收资源
+	m_client->Close();
+	if (m_client != NULL) {
+		delete m_client;
+		m_client = NULL;
+	}
+
+	//3 显示到列表框
+	CString strShow;
+	strShow = CatShowString(_T(""), _T("断开与服务器的连接"));
+	m_list.AddString(strShow);
+	UpdateData(FALSE);
+}
+
+
+HBRUSH CMFCChatClientDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+	CString strColor;
+	GetDlgItemTextW(IDC_COLOR_COMBO, strColor);
+
+	if (IDC_LIST == pWnd->GetDlgCtrlID() || IDC_SENDMSG_EDIT == pWnd->GetDlgCtrlID()) {
+		if (strColor == _T("黑色")) {
+			pDC->SetTextColor(RGB(0, 0, 0));
+		}
+		else if (strColor == _T("红色")) {
+			pDC->SetTextColor(RGB(255, 0, 0));
+		}
+		else if (strColor == L"蓝色") {
+			pDC->SetTextColor(RGB(0, 0, 255));
+		}
+		else if (strColor == L"绿色") {
+			pDC->SetTextColor(RGB(0, 255, 0));
+		}
+	}
+
+
+	return hbr;
 }

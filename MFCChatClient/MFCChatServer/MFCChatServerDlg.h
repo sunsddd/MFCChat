@@ -36,9 +36,13 @@ protected:
 public:
 	afx_msg void OnBnClickedStartBtn(); //mark
 	CListBox m_list;
-	CServerSocket *m_server;
-	ChatServer *m_chat;
+	CServerSocket *m_server = NULL;
+	ChatServer *m_chat = NULL;
 	CTime m_tm;
 	afx_msg void OnBnClickedSendBtn();
 	CString CatShowString(CString strInfo, CString strMsg);
+	afx_msg void OnBnClickedClearBtn();
+	afx_msg void OnBnClickedStopBtn();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CComboBox m_WordColorCombo;
 };
