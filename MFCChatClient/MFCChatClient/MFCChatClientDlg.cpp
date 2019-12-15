@@ -190,6 +190,30 @@ void CMFCChatClientDlg::OnPaint()
 	}
 	else
 	{
+		//一 确定目的区域		二 加载资源图片并且转化为内存设备	三 绘图
+		//1 定义dc
+		CPaintDC dc(this);
+		//2 确定绘制的区域
+		CRect rect;
+		GetClientRect(&rect);
+		//TRACE("####width: %d,height: %d", rect.Width(), rect.Height());
+		//3 定义并创建一个内存设备环境 创建兼容性DC
+		CDC dcBmp;
+		dcBmp.CreateCompatibleDC(&dcBmp);
+
+		//4 载入资源图片
+		CBitmap bmpBackGround;
+		bmpBackGround.LoadBitmap(IDB_WATER_BMP);
+		//5 将图片资源载入到位图里面 bBitMap位图
+		BITMAP bBitMap;
+		bmpBackGround.GetBitmap(&bBitMap);
+		//6 将位图选入临时的内存设备环境
+		CBitmap *pbmOld = dcBmp.SelectObject(&bmpBackGround);
+
+		//7 开始绘制
+		dc.StretchBlt(0, 0, rect.Width(), rect.Height(), &dcBmp, 0, 0, bBitMap.bmWidth, bBitMap.bmHeight, SRCCOPY);
+
+
 		CDialogEx::OnPaint();
 	}
 }
@@ -387,4 +411,29 @@ HBRUSH CMFCChatClientDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 	return hbr;
+}
+
+
+BOOL CMFCChatClientDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN) {
+		//TRACE("####回车");
+		return TRUE;
+	}
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_SPACE) {
+		//TRACE("####空格");
+		return TRUE;
+	}
+	//添加快捷键
+	if (pMsg->message == WM_KEYDOWN) {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			if (pMsg->wParam == 'X') {
+				CDialogEx::OnOK();
+			}
+		}
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

@@ -71,5 +71,11 @@
     <Image Include="res\MFCChatServer.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="C:\Users\Administrator\Desktop\lvshui.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="C:\Users\Administrator\Desktop\qingshan.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
